@@ -8,24 +8,46 @@ const mapStyles = {
 };
 
 export class MapContainer extends Component {
-  render() {
-      console.log(key)
-    return (
-      <Map
-        google={this.props.google}
-        zoom={14}
-        style={mapStyles}
-        initialCenter={
-          {
-            lat: -1.2884,
-            lng: 36.8233
-          }
+    state = { lat: null, lng:null, errorMessage: '' };
+
+
+    componentDidMount() {
+        window.navigator.geolocation.getCurrentPosition(
+          position => this.setState({ lat: position.coords.latitude ,lng : position.coords.longitude}),
+          err => this.setState({ errorMessage: err.message })
+        );
+      }
+      renderContent() {
+        if (this.state.errorMessage && !this.state.lat) {
+          return <div>Error: {this.state.errorMessage}</div>;
         }
-      />
-    );
+    
+        if (!this.state.errorMessage && this.state.lat) {
+          return (
+            <Map
+            google={this.props.google}
+            zoom={14}
+            style={mapStyles}
+            initialCenter={
+              {
+                // lat: this.state.lat,
+                // lng: this.state.lng
+                lat: this.state.lat,
+                lng: this.state.lng
+              }
+            }
+          />  
+                );   
+               }
+    
+        return <div> 'Please accept location request' </div>;
+      }
+  render() {
+      console.log(this.state);
+    
+        return <div>{this.renderContent()}</div>;
+        
   }
 }
 
-export default GoogleApiWrapper({
-  apiKey: key
-})(MapContainer);
+export default GoogleApiWrapper({apiKey: key})(MapContainer);
