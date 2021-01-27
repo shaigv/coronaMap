@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Map, GoogleApiWrapper, InfoWindow, Marker } from 'google-maps-react';
-import key from '../Ignore/GAPI'
+import key from '../Ignore/GAPI';
+import covids_locations from './Covids';
 
 const mapStyles = {
     width: '100%',
@@ -16,6 +17,7 @@ export class MapContainer extends Component {
             position => this.setState({ lat: position.coords.latitude, lng: position.coords.longitude }),
             err => this.setState({ errorMessage: err.message })
         );
+        
     }
     renderContent() {
         if (this.state.errorMessage && !this.state.lat) {
@@ -23,6 +25,7 @@ export class MapContainer extends Component {
         }
 
         if (!this.state.errorMessage && this.state.lat) {
+
             return (
                 <div>
                     <Map
@@ -43,6 +46,8 @@ export class MapContainer extends Component {
                                 lat: this.state.lat ,
                                 lng: this.state.lng }}
                         />
+                        
+                       {this.renderCovids()} 
 
                     </Map>
 
@@ -52,10 +57,26 @@ export class MapContainer extends Component {
 
         return <div> 'Please accept location request' </div>;
     }
-    render() {
-        console.log(this.state);
 
-        return <div>{this.renderContent()}</div>;
+    renderCovids(){
+        return covids_locations.map(covid => {
+            return (
+            <Marker
+                icon={{url: "https://www.brainpop.com//image_library/287000/287812_256x256.png",
+                scaledSize:  new this.props.google.maps.Size(covid.datetime.length*10,covid.datetime.length*10)
+            }}
+                position={covid.location}
+                 />);
+        })
+    }
+    render() {
+
+        return (
+        <div>
+            {this.renderContent()}
+            {/* {this.renderCovids()} */}
+        </div>
+        );
 
     }
 }
