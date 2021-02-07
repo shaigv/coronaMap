@@ -50,11 +50,16 @@ export class MapContainer extends Component {
         this.setState({ zoomLevel: this.refs.map.map.zoom});
     }
 
-    calculateDistance(origLat, origLon, markerLat, markerLon) {   //in KM
-        return getDistance(
+    calculateDistance = (origLat, origLon, markerLat, markerLon) => {   //in KM
+
+
+        const ans = getDistance(
             { latitude: origLat, longitude: origLon },
             { latitude: markerLat, longitude: markerLon }
         )
+
+        console.log(ans);
+        return ans;
     }
 
     changeMyPosition(position){
@@ -136,18 +141,19 @@ export class MapContainer extends Component {
 
     renderCovids() {
         return covids_locations.map(covid => {
-            return (
-                <Marker
-                    key={covid.name}
-                    // onClick={this.onMarkerClick}
-                    onClick={(props, marker, e) => this.onMarkerClick(props, marker, e, covid)}
-                    name={covid.name}
-                    icon={{
-                        url: "/covid.png",
-                        scaledSize: new this.props.google.maps.Size(this.calculateCovidSize(covid.datetime.length), this.calculateCovidSize(covid.datetime.length))
-                    }}
-                    position={covid.location}
-                />);
+            if(this.calculateDistance(covid.location.lat, covid.location.lng, this.state.lat, this.state.lng) < 2000)   //in KM
+                return (
+                    <Marker
+                        key={covid.name}
+                        // onClick={this.onMarkerClick}
+                        onClick={(props, marker, e) => this.onMarkerClick(props, marker, e, covid)}
+                        name={covid.name}
+                        icon={{
+                            url: "/covid.png",
+                            scaledSize: new this.props.google.maps.Size(this.calculateCovidSize(covid.datetime.length), this.calculateCovidSize(covid.datetime.length))
+                        }}
+                        position={covid.location}
+                    />);
         })
     }
 
