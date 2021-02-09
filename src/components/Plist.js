@@ -1,19 +1,15 @@
 import React from 'react'
 import './Tab.css'
-import InfiniteScroll from 'react-infinite-scroll-component';
 
 
 
-class Test extends React.Component {
+class Plist extends React.Component {
 
 
-    render() {
-        console.log(this.props.covid.datetime.length);
-                                        
+    render() {                                        
         return (
 
-            // <div id='container right' style={{ height: '720px', width: '310px',"overflow": "scroll",position:'relative'}}>
-            <div id='container' style={{ height: '700px', width: '230px',"overflow-y": "auto",position:'relative',float:'right' }}>
+            <div id='container' style={{ height: '700px', width: '230px',"overflowY": "auto",position:'relative',float:'right' }}>
 
             <div className="r-text  "><h2>{this.props.covid.name} </h2></div>
 
@@ -21,7 +17,7 @@ class Test extends React.Component {
                     
                     {this.props.covid.datetime.map(datetime => {
                         return (
-                            <div className="item r-text">
+                            <div key={datetime.key} className="item r-text">
 
                                 <div className="content">
                                     <h3 className="header">{datetime.date}</h3>
@@ -41,4 +37,4 @@ class Test extends React.Component {
 }
 
 
-export default Test;
+export default Plist;
