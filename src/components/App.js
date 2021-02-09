@@ -9,7 +9,7 @@ import covids_locations from './Covids';
 
 const RADIUS = 3500;
 export class MapContainer extends Component {
-    state = { lat: null, lng: null,positionAlert:null, errorMessage: '', showingInfoWindow: false,showAlert:false, activeMarker: {}, selectedCovid: {}, showTab: false,isButtonFilterClick:false, zoomLevel: 14,radius:RADIUS };
+    state = { lat: null, lng: null,positionAlert:null, errorMessage: '', showingInfoWindow: false,showAlert:false, activeMarker: {}, selectedCovid: {}, showTab: false,isButtonFilterClick:true, zoomLevel: 14,radius:RADIUS };
     timeoutid=0;
 
 
@@ -142,8 +142,8 @@ export class MapContainer extends Component {
     }
 
 
-    onFilterRadius(){
-        if(isButtonFilterClick){
+    onFilterRadius=()=>{
+        if(this.state.isButtonFilterClick){
             this.setState({isButtonFilterClick:false,radius:99999999999})
         }
         else{
@@ -185,7 +185,7 @@ export class MapContainer extends Component {
                     {this.renderPanel()}
                 </div>
                 <div style={{position:'absolute',bottom:'5px'}}>
-                    <button className="ui toggle button" onClick={onFilterRadius}>Filter By Radius(3.5)</button>
+                    <button className={this.state.isButtonFilterClick? "ui toggle button active":"ui toggle button"} onClick={this.onFilterRadius}>Filter By Radius(3.5)</button>
                 </div>
                 <Alert
                    open={this.state.showAlert}
