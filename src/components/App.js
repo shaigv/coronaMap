@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import { Map, GoogleApiWrapper, InfoWindow, Marker } from 'google-maps-react';
 import key from '../Ignore/GAPI';
 import Plist from './Plist';
+import Alert from './Alert'
 import { getDistance } from 'geolib';
 import './Tab.css';
 import covids_locations from './Covids';
 
-
+const RADIUS = 3500;
 export class MapContainer extends Component {
-    state = { lat: null, lng: null, errorMessage: '', showingInfoWindow: false,showAlert:false, activeMarker: {}, selectedCovid: {}, showTab: false, zoomLevel: 14,radius:3500 };
+    state = { lat: null, lng: null,positionAlert:null, errorMessage: '', showingInfoWindow: false,showAlert:false, activeMarker: {}, selectedCovid: {}, showTab: false,isButtonFilterClick:false, zoomLevel: 14,radius:RADIUS };
     timeoutid=0;
 
 
@@ -22,7 +23,7 @@ export class MapContainer extends Component {
 
     }
     onMarkerClick = (props, marker, e, covid) => {
-        console.log(covid)
+        // console.log(covid)
         this.setState({
             selectedCovid: covid,
             activeMarker: marker,
@@ -54,19 +55,17 @@ export class MapContainer extends Component {
             { latitude: markerLat, longitude: markerLon }
         )
 
-        console.log(ans);
         return ans;
     }
 
-    changeMyPosition(position){
-        this.setState({ lat: position.lat(), lng: position.lng() })
+    changeMyPosition=()=>{
+        this.setState({ lat: this.state.positionAlert.lat(), lng: this.state.positionAlert.lng(),showAlert:false })
     }
 
-    changeMyPositionAlert(position){
+    changeMyPositionAlert(positionIfConfirm){
 
         this.timeoutid = setTimeout(()=>{
-            this.setState({showAlert:true});
-            console.log("timrout on");
+            this.setState({showAlert:true,positionAlert:positionIfConfirm});
         },250);
 
     }
@@ -142,6 +141,16 @@ export class MapContainer extends Component {
         }
     }
 
+
+    onFilterRadius(){
+        if(isButtonFilterClick){
+            this.setState({isButtonFilterClick:false,radius:99999999999})
+        }
+        else{
+            this.setState({isButtonFilterClick:true,radius:RADIUS})
+        }
+    }
+
     calculateCovidSize(len) {
         return (Math.log(len) + 1) * this.state.zoomLevel;
     }
@@ -175,6 +184,14 @@ export class MapContainer extends Component {
                 <div className="right">
                     {this.renderPanel()}
                 </div>
+                <div style={{position:'absolute',bottom:'5px'}}>
+                    <button className="ui toggle button" onClick={onFilterRadius}>Filter By Radius(3.5)</button>
+                </div>
+                <Alert
+                   open={this.state.showAlert}
+                   onConfirm={this.changeMyPosition}
+                   onCancel={()=>this.setState({showAlert:false})}
+                />
             </div>
         );
 
