@@ -1,19 +1,14 @@
 import React, { Component } from 'react';
 import { Map, GoogleApiWrapper, InfoWindow, Marker } from 'google-maps-react';
 import key from '../Ignore/GAPI';
-import Tab from './Tab'
-import Test from './Tets';
+import Plist from './Plist';
 import { getDistance } from 'geolib';
 import './Tab.css';
 import covids_locations from './Covids';
 
-const mapStyles = {
-    width: '80%',
-    height: '100%'
-};
 
 export class MapContainer extends Component {
-    state = { lat: null, lng: null, errorMessage: '', showingInfoWindow: false, activeMarker: {}, selectedCovid: {}, showTab: false, zoomLevel: 14 };
+    state = { lat: null, lng: null, errorMessage: '', showingInfoWindow: false, activeMarker: {}, selectedCovid: {}, showTab: false, zoomLevel: 14,radius:3500 };
 
 
     componentDidMount() {
@@ -65,15 +60,6 @@ export class MapContainer extends Component {
     changeMyPosition(position){
         this.setState({ lat: position.lat(), lng: position.lng() })
     }
-
-    onClose = props => {
-        if (this.state.showingInfoWindow) {
-            this.setState({
-                showingInfoWindow: false,
-                activeMarker: null
-            });
-        }
-    };
     renderContent() {
         if (this.state.errorMessage && !this.state.lat) {
             return <div>Error: {this.state.errorMessage}</div>;
@@ -135,7 +121,7 @@ export class MapContainer extends Component {
 
     renderPanel() {
         if (this.state.showTab) {
-            return <Test classname="right" covid={this.state.selectedCovid}></Test>
+            return <Plist classname="right" covid={this.state.selectedCovid}></Plist>
 
             // return <Tab classname="right" covid={this.state.selectedCovid}></Tab>
         }
@@ -148,9 +134,12 @@ export class MapContainer extends Component {
         return (Math.log(len) + 1) * this.state.zoomLevel;
     }
 
+    renderCovidByRadius(covid){
+        return this.calculateDistance(covid.location.lat, covid.location.lng, this.state.lat, this.state.lng) < this.state.radius
+    }
     renderCovids() {
-        return covids_locations.map(covid => {
-            if(this.calculateDistance(covid.location.lat, covid.location.lng, this.state.lat, this.state.lng) < 2000)   //in KM
+        return covids_locations.filter(covid=>this.renderCovidByRadius(covid)).map(covid => {
+              //in KM
                 return (
                     <Marker
                         key={covid.name}
