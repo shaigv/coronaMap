@@ -65,6 +65,15 @@ export class MapContainer extends Component {
     changeMyPosition(position){
         this.setState({ lat: position.lat(), lng: position.lng() })
     }
+
+    onClose = props => {
+        if (this.state.showingInfoWindow) {
+            this.setState({
+                showingInfoWindow: false,
+                activeMarker: null
+            });
+        }
+    };
     renderContent() {
         if (this.state.errorMessage && !this.state.lat) {
             return <div>Error: {this.state.errorMessage}</div>;
