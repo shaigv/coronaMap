@@ -8,7 +8,8 @@ import covids_locations from './Covids';
 
 
 export class MapContainer extends Component {
-    state = { lat: null, lng: null, errorMessage: '', showingInfoWindow: false, activeMarker: {}, selectedCovid: {}, showTab: false, zoomLevel: 14,radius:3500 };
+    state = { lat: null, lng: null, errorMessage: '', showingInfoWindow: false,showAlert:false, activeMarker: {}, selectedCovid: {}, showTab: false, zoomLevel: 14,radius:3500 };
+    timeoutid=0;
 
 
     componentDidMount() {
@@ -60,6 +61,17 @@ export class MapContainer extends Component {
     changeMyPosition(position){
         this.setState({ lat: position.lat(), lng: position.lng() })
     }
+
+    changeMyPositionAlert(position){
+
+        this.timeoutid = setTimeout(()=>{
+            this.setState({showAlert:true});
+            console.log("timrout on");
+        },250);
+
+    }
+
+
     renderContent() {
         if (this.state.errorMessage && !this.state.lat) {
             return <div>Error: {this.state.errorMessage}</div>;
@@ -75,8 +87,8 @@ export class MapContainer extends Component {
                         // zoom={16}
                         onZoomChanged={this._handleZoomChanged.bind(this)}
                         showsUserLocation={true}
-                        onClick={(t, map, c) =>this.changeMyPosition(c.latLng)}
-                        
+                        onClick={(t, map, c) =>this.changeMyPositionAlert(c.latLng)}
+                        onDblclick ={()=>clearTimeout(this.timeoutid)}
                         onUserLocationChange={event => console.log("move")}
                         style={{ height: '100%', width: this.state.showTab ? '84.5%' : '100%' }}
                         initialCenter={
