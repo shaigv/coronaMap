@@ -84,7 +84,9 @@ export class MapContainer extends Component {
                         ref='map'
                         google={this.props.google}
                         // zoom={16}
-                        onZoomChanged={this._handleZoomChanged.bind(this)}
+                        on
+                        
+                        //onZoomChanged={this._handleZoomChanged.bind(this)}
                         showsUserLocation={true}
                         onClick={(t, map, c) =>this.changeMyPositionAlert(c.latLng)}
                         onDblclick ={()=>clearTimeout(this.timeoutid)}
@@ -156,14 +158,14 @@ export class MapContainer extends Component {
     }
 
     renderCovidByRadius(covid){
+
         return this.calculateDistance(covid.location.lat, covid.location.lng, this.state.lat, this.state.lng) < this.state.radius
     }
     renderCovids() {
         return covids_locations.filter(covid=>this.renderCovidByRadius(covid)).map(covid => {
-              //in KM
                 return (
                     <Marker
-                        key={covid.name}
+                        key={covid.address}
                         // onClick={this.onMarkerClick}
                         onClick={(props, marker, e) => this.onMarkerClick(props, marker, e, covid)}
                         name={covid.name}
@@ -185,7 +187,7 @@ export class MapContainer extends Component {
                     {this.renderPanel()}
                 </div>
                 <div style={{position:'absolute',bottom:'5px'}}>
-                    <button className={this.state.isButtonFilterClick? "ui toggle button active":"ui toggle button"} onClick={this.onFilterRadius}>Filter By Radius(3.5)</button>
+                    <button className={this.state.isButtonFilterClick? "ui toggle button active":"ui toggle button"} onClick={this.onFilterRadius}>(3.5 ק"מ) סנן לפי רדיוס</button>
                 </div>
                 <Alert
                    open={this.state.showAlert}
