@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Confirm ,Button,Icon} from 'semantic-ui-react'
+import { Confirm } from 'semantic-ui-react'
 import './Tab.css';
 
 

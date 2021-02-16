@@ -44,7 +44,9 @@ export class MapContainer extends Component {
     };
 
     _handleZoomChanged() {
-        this.setState({ zoomLevel: this.refs.map.map.zoom});
+        const currentZomm= this.refs.map.map.zoom;
+        if(currentZomm===8)
+            this.setState({ zoomLevel: this.refs.map.map.zoom});
     }
 
     calculateDistance = (origLat, origLon, markerLat, markerLon) => {   //in KM
@@ -86,12 +88,12 @@ export class MapContainer extends Component {
                         // zoom={16}
                         on
                         
-                        //onZoomChanged={this._handleZoomChanged.bind(this)}
+                        onZoomChanged={this._handleZoomChanged.bind(this)}
                         showsUserLocation={true}
-                        onClick={(t, map, c) =>this.changeMyPositionAlert(c.latLng)}
-                        onDblclick ={()=>clearTimeout(this.timeoutid)}
+                        //onClick={(t, map, c) =>this.changeMyPositionAlert(c.latLng)}
+                        //onDblclick ={()=>clearTimeout(this.timeoutid)}
                         onUserLocationChange={event => console.log("move")}
-                        style={{ height: '100%', width: this.state.showTab ? '84.5%' : '100%' }}
+                        //style={{ height: '100%', width: this.state.showTab ? '84.5%' : '100%' }}
                         initialCenter={
                             {
                                 lat: this.state.lat,
@@ -118,6 +120,7 @@ export class MapContainer extends Component {
                             <div>
                                 <div className='r-text'>{this.state.selectedCovid.name}</div>
                                 <div className='r-text'>{this.state.selectedCovid.address}</div>
+                                <div className='r-text'>{this.state.selectedCovid.city}</div>
                             </div>
 
                         </InfoWindow>
@@ -128,7 +131,7 @@ export class MapContainer extends Component {
             );
         }
 
-        return <div> 'Please accept location request' </div>;
+        return <div> 'Loading...' </div>;
     }
 
 
@@ -158,14 +161,21 @@ export class MapContainer extends Component {
     }
 
     renderCovidByRadius(covid){
+        
+        const isFilter = this.calculateDistance(covid.location.lat, covid.location.lng, this.state.lat, this.state.lng) < this.state.radius;
+        // if(isFilter && this.state.radius<3501){
+        //     console.log(this.state.radius);
+        //     console.log(covid.name,"  ",covid.city);
 
-        return this.calculateDistance(covid.location.lat, covid.location.lng, this.state.lat, this.state.lng) < this.state.radius
+        //     console.log(covid.location.lat, covid.location.lng, this.state.lat, this.state.lng);}
+
+        return isFilter;
     }
     renderCovids() {
         return covids_locations.filter(covid=>this.renderCovidByRadius(covid)).map(covid => {
                 return (
                     <Marker
-                        key={covid.address}
+                        key={covid.address+covid.city+covid.name}
                         // onClick={this.onMarkerClick}
                         onClick={(props, marker, e) => this.onMarkerClick(props, marker, e, covid)}
                         name={covid.name}

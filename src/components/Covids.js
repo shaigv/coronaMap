@@ -35110,7 +35110,7 @@ const covids_locations =
       ]
     },
     {
-      "name": " yello",
+      "name": " yello2",
       "city": " פתח תקווה",
       "address": " ראשון לציון  ",
       "location": {
@@ -47542,7 +47542,7 @@ const covids_locations =
       ]
     },
     {
-      "name": " נבעיות",
+      "name": " נבעיות2",
       "city": " לוד",
       "address": "  1 ",
       "location": {
@@ -65239,7 +65239,7 @@ const covids_locations =
       ]
     },
     {
-      "name": " פארק שער העיר לוד",
+      "name": " 2פארק שער העיר לוד",
       "city": " לוד",
       "address": " ",
       "location": {
@@ -94167,7 +94167,7 @@ const covids_locations =
       ]
     },
     {
-      "name": " בית כנסת ברסלב",
+      "name": " בית כנסת ברסלב2",
       "city": " בית אל",
       "address": " ",
       "location": {
@@ -95043,7 +95043,7 @@ const covids_locations =
       ]
     },
     {
-      "name": " בית כנסת בצור ירון",
+      "name": " 2בית כנסת בצור ירון",
       "city": " ירושלים",
       "address": " ",
       "location": {
@@ -100329,7 +100329,7 @@ const covids_locations =
     {
       "name": " אמרי שפר",
       "city": " ירושלים",
-      "address": " הרב קצנלבוגן רפאל  ",
+      "address": " הרב קצנלבוגן רפאל2  ",
       "location": {
         "lat": 31.7858765,
         "lng": 35.1756528
