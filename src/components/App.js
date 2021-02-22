@@ -23,6 +23,12 @@ export class MapContainer extends Component {
     }
     
     onMarkerClick = (props, marker, e, covid) => {
+        // marker.setIcon({
+        //     url: "/covid-click.png",
+        //     scaledSize: new this.props.google.maps.Size(25,25)
+        // });
+        // marker.setIcon('https://www.google.com/mapfiles/marker_green.png');
+
         this.setState({
             selectedCovid: covid,
             activeMarker: marker,
@@ -63,6 +69,9 @@ export class MapContainer extends Component {
 
 
     renderContent() {
+        
+
+
         if (this.state.errorMessage && !this.state.lat) {
             return <div>Error: {this.state.errorMessage}</div>;
         }
@@ -105,14 +114,16 @@ export class MapContainer extends Component {
                             marker={this.state.activeMarker}
                             visible={this.state.showingInfoWindow}
                             onClose={this.onClose}
+                            // content={"\u200e"+this.state.selectedCovid.name}
+                            
+                            
                         >
-                            <div>
-                                <div className='r-text'>{this.state.selectedCovid.name}</div>
-                                <div className='r-text'>{this.state.selectedCovid.address}</div>
-                                <div className='r-text'>{this.state.selectedCovid.city}</div>
-                            </div>
+                            <div>{this.state.selectedCovid.name}</div>
 
-                        </InfoWindow>
+                            </InfoWindow>
+
+                            
+                               
 
                     </Map>
 
