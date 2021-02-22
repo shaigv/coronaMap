@@ -28,3 +28,12 @@ div.r-text {
   height: 0;
   width: 0;
 }
+.element.style {
+  padding-left: 0;
+  padding-bottom  : 0;
+}
+.right-to-left {
+  display:block;
+  direction:rtl;
+  unicode-bidi:bidi-override
+  }

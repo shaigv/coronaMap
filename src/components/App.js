@@ -118,7 +118,7 @@ export class MapContainer extends Component {
                             
                             
                         >
-                            <div>{this.state.selectedCovid.name}</div>
+                            <div style={{paddingLeft:'10px',paddingBottom:'10px'}}>{this.state.selectedCovid.name}</div>
 
                             </InfoWindow>
 
