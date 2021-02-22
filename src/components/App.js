@@ -3,14 +3,13 @@ import { Map, GoogleApiWrapper, InfoWindow, Marker } from 'google-maps-react';
 import key from '../Ignore/GAPI';
 import Plist from './Plist';
 import Alert from './Alert'
-import { getDistance } from 'geolib';
 import './Tab.css';
-import covids_locations from './Covids';
+import Markers from './Markers'
 
 const RADIUS = 3500;
 export class MapContainer extends Component {
-    state = { lat: null, lng: null,positionAlert:null, errorMessage: '', showingInfoWindow: false,showAlert:false, activeMarker: {}, selectedCovid: {}, showTab: false,isButtonFilterClick:true, zoomLevel: 14,radius:RADIUS };
-    timeoutid=0;
+    state = { lat: null, lng: null, positionAlert: null, errorMessage: '', showingInfoWindow: false, showAlert: false, activeMarker: {}, selectedCovid: {}, showTab: false, isButtonFilterClick: true, zoomLevel: 14, radius: RADIUS };
+    timeoutid = 0;
 
 
     componentDidMount() {
@@ -22,8 +21,8 @@ export class MapContainer extends Component {
 
 
     }
+    
     onMarkerClick = (props, marker, e, covid) => {
-        // console.log(covid)
         this.setState({
             selectedCovid: covid,
             activeMarker: marker,
@@ -44,31 +43,21 @@ export class MapContainer extends Component {
     };
 
     _handleZoomChanged() {
-        const currentZomm= this.refs.map.map.zoom;
-        if(currentZomm===8)
-            this.setState({ zoomLevel: this.refs.map.map.zoom});
+        const currentZomm = this.refs.map.map.zoom;
+        if (currentZomm === 8)
+            this.setState({ zoomLevel: this.refs.map.map.zoom });
     }
 
-    calculateDistance = (origLat, origLon, markerLat, markerLon) => {   //in KM
 
-
-        const ans = getDistance(
-            { latitude: origLat, longitude: origLon },
-            { latitude: markerLat, longitude: markerLon }
-        )
-
-        return ans;
+    changeMyPosition = () => {
+        this.setState({ lat: this.state.positionAlert.lat(), lng: this.state.positionAlert.lng(), showAlert: false })
     }
 
-    changeMyPosition=()=>{
-        this.setState({ lat: this.state.positionAlert.lat(), lng: this.state.positionAlert.lng(),showAlert:false })
-    }
+    changeMyPositionAlert(positionIfConfirm) {
 
-    changeMyPositionAlert(positionIfConfirm){
-
-        this.timeoutid = setTimeout(()=>{
-            this.setState({showAlert:true,positionAlert:positionIfConfirm});
-        },250);
+        this.timeoutid = setTimeout(() => {
+            this.setState({ showAlert: true, positionAlert: positionIfConfirm });
+        }, 250);
 
     }
 
@@ -85,23 +74,19 @@ export class MapContainer extends Component {
                     <Map
                         ref='map'
                         google={this.props.google}
-                        // zoom={16}
-                        on
-                        
                         onZoomChanged={this._handleZoomChanged.bind(this)}
                         showsUserLocation={true}
                         //onClick={(t, map, c) =>this.changeMyPositionAlert(c.latLng)}
                         //onDblclick ={()=>clearTimeout(this.timeoutid)}
                         onUserLocationChange={event => console.log("move")}
-                        //style={{ height: '100%', width: this.state.showTab ? '84.5%' : '100%' }}
                         initialCenter={
                             {
                                 lat: this.state.lat,
                                 lng: this.state.lng
                             }
                         }
-                    >
 
+                    >
                         <Marker
                             icon={{ url: "/bluecircle.png" }}
                             position={{
@@ -109,8 +94,12 @@ export class MapContainer extends Component {
                                 lng: this.state.lng
                             }}
                         />
-
-                        {this.renderCovids()}
+                        <Markers 
+                        zoom={this.state.zoomLevel} 
+                        lat={this.state.lat} 
+                        lng={this.state.lng} 
+                        radius={this.state.radius} 
+                        onMClick={this.onMarkerClick} />
 
                         <InfoWindow
                             marker={this.state.activeMarker}
@@ -138,8 +127,6 @@ export class MapContainer extends Component {
     renderPanel() {
         if (this.state.showTab) {
             return <Plist classname="right" covid={this.state.selectedCovid}></Plist>
-
-            // return <Tab classname="right" covid={this.state.selectedCovid}></Tab>
         }
         else {
             return <div></div>
@@ -147,62 +134,32 @@ export class MapContainer extends Component {
     }
 
 
-    onFilterRadius=()=>{
-        if(this.state.isButtonFilterClick){
-            this.setState({isButtonFilterClick:false,radius:99999999999})
+    onFilterRadius = () => {
+        if (this.state.isButtonFilterClick) {
+            this.setState({ isButtonFilterClick: false, radius: 99999999999 })
         }
-        else{
-            this.setState({isButtonFilterClick:true,radius:RADIUS})
+        else {
+            this.setState({ isButtonFilterClick: true, radius: RADIUS })
         }
     }
 
-    calculateCovidSize(len) {
-        return (Math.log(len) + 1) * this.state.zoomLevel;
-    }
-
-    renderCovidByRadius(covid){
-        
-        const isFilter = this.calculateDistance(covid.location.lat, covid.location.lng, this.state.lat, this.state.lng) < this.state.radius;
-        // if(isFilter && this.state.radius<3501){
-        //     console.log(this.state.radius);
-        //     console.log(covid.name,"  ",covid.city);
-
-        //     console.log(covid.location.lat, covid.location.lng, this.state.lat, this.state.lng);}
-
-        return isFilter;
-    }
-    renderCovids() {
-        return covids_locations.filter(covid=>this.renderCovidByRadius(covid)).map(covid => {
-                return (
-                    <Marker
-                        key={covid.address+covid.city+covid.name}
-                        // onClick={this.onMarkerClick}
-                        onClick={(props, marker, e) => this.onMarkerClick(props, marker, e, covid)}
-                        name={covid.name}
-                        icon={{
-                            url: "/covid.png",
-                            scaledSize: new this.props.google.maps.Size(this.calculateCovidSize(covid.datetime.length), this.calculateCovidSize(covid.datetime.length))
-                        }}
-                        position={covid.location}
-                    />);
-        })
-    }
-
+  
     render() {
 
         return (
             <div >
                 {this.renderContent()}
+
                 <div className="right">
                     {this.renderPanel()}
                 </div>
-                <div style={{position:'absolute',bottom:'5px'}}>
-                    <button className={this.state.isButtonFilterClick? "ui toggle button active":"ui toggle button"} onClick={this.onFilterRadius}>(3.5 ק"מ) סנן לפי רדיוס</button>
+                <div style={{ position: 'absolute', bottom: '5px' }}>
+                    <button className={this.state.isButtonFilterClick ? "ui toggle button active" : "ui toggle button"} onClick={this.onFilterRadius}>(3.5 ק"מ) סנן לפי רדיוס</button>
                 </div>
                 <Alert
-                   open={this.state.showAlert}
-                   onConfirm={this.changeMyPosition}
-                   onCancel={()=>this.setState({showAlert:false})}
+                    open={this.state.showAlert}
+                    onConfirm={this.changeMyPosition}
+                    onCancel={() => this.setState({ showAlert: false })}
                 />
             </div>
         );
