@@ -5,6 +5,7 @@ import Plist from './Plist';
 import Alert from './Alert'
 import './Tab.css';
 import Markers from './Markers'
+import ModalExampleBasic from './Portal'
 
 const RADIUS = 3500;
 export class MapContainer extends Component {
@@ -137,7 +138,7 @@ export class MapContainer extends Component {
 
                     </Map>
                     <div style={{ position: 'absolute', bottom: '5px' }}>
-                        <button className={this.state.isButtonFilterClick ? "ui toggle button active" : "ui toggle button"} onClick={this.onFilterRadius}>(3.5 ק"מ) סנן לפי רדיוס</button>
+                        <button className={this.state.isButtonFilterClick ? "ui toggle button active" : "ui toggle button"} title={this.state.isButtonFilterClick? "לחץ כדי לראות חולים בכל המפה":"לחץ כדי לראות חולים ברדיוס שלך"} onClick={this.onFilterRadius}>(3.5 ק"מ) סנן לפי רדיוס</button>
                     </div>
 
                 </div>
@@ -192,11 +193,14 @@ export class MapContainer extends Component {
                     <button className={this.state.isButtonFilterClick ? "ui toggle button active" : "ui toggle button"} onClick={this.onFilterRadius}>(3.5 ק"מ) סנן לפי רדיוס</button>
                 </div> */}
 
-                <Alert
+                {/* <Alert
                     open={this.state.showAlert}
                     onConfirm={this.onConfirmAlert}
                     //onCancel={() => this.setState({ showAlert: false })}
-                />
+                /> */}
+                <div style={{display:'flex'}}>
+                <ModalExampleBasic/>
+                </div>
             </div>
         );
 
