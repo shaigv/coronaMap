@@ -8,7 +8,7 @@ import Markers from './Markers'
 
 const RADIUS = 3500;
 export class MapContainer extends Component {
-    state = { lat: null, lng: null, positionAlert: null, errorMessage: '', showingInfoWindow: false, showAlert: false, activeMarker: {}, selectedCovid: {}, showTab: false, isButtonFilterClick: true, zoomLevel: 14, radius: RADIUS };
+    state = { lat: null, lng: null, positionAlert: null, errorMessage: '', showingInfoWindow: false, showAlert: true, activeMarker: {}, selectedCovid: {}, showTab: false, isButtonFilterClick: true, zoomLevel: 14, radius: RADIUS };
     timeoutid = 0;
 
 
@@ -16,12 +16,15 @@ export class MapContainer extends Component {
         window.navigator.geolocation.getCurrentPosition(
             position => this.setState({ lat: position.coords.latitude, lng: position.coords.longitude }),
             err => this.setState({ errorMessage: err.message })
-        );
 
+            
+        );
+        
+       
 
 
     }
-    
+
     onMarkerClick = (props, marker, e, covid) => {
         // marker.setIcon({
         //     url: "/covid-click.png",
@@ -69,11 +72,18 @@ export class MapContainer extends Component {
 
 
     renderContent() {
-        
-
-
         if (this.state.errorMessage && !this.state.lat) {
-            return <div>Error: {this.state.errorMessage}</div>;
+            if (this.state.errorMessage === "User denied Geolocation") {
+                return (
+                    <div style={{ position: 'relative', height: '720px' }} className="ui segment">
+                        <div className="ui active dimmer">
+                            <div className="ui huge text loader">נא אשר שימוש במיקום(במובייל יש להדליק את המיקום)</div>
+                        </div>
+                        <p></p>
+                    </div>
+                );
+            }
+            // return <div style={{textAlign:'center'}}>נא אשר שימוש במיקום(במובייל יש להדליק את המיקום)</div>;
         }
 
         if (!this.state.errorMessage && this.state.lat) {
@@ -103,35 +113,45 @@ export class MapContainer extends Component {
                                 lng: this.state.lng
                             }}
                         />
-                        <Markers 
-                        zoom={this.state.zoomLevel} 
-                        lat={this.state.lat} 
-                        lng={this.state.lng} 
-                        radius={this.state.radius} 
-                        onMClick={this.onMarkerClick} />
+                        <Markers
+                            zoom={this.state.zoomLevel}
+                            lat={this.state.lat}
+                            lng={this.state.lng}
+                            radius={this.state.radius}
+                            onMClick={this.onMarkerClick} />
 
                         <InfoWindow
                             marker={this.state.activeMarker}
                             visible={this.state.showingInfoWindow}
                             onClose={this.onClose}
-                            // content={"\u200e"+this.state.selectedCovid.name}
-                            
-                            
+                        // content={"\u200e"+this.state.selectedCovid.name}
+
+
                         >
-                            <div style={{paddingLeft:'10px',paddingBottom:'10px'}}>{this.state.selectedCovid.name}</div>
+                            <div style={{ paddingLeft: '10px', paddingBottom: '10px' }}>{this.state.selectedCovid.name}</div>
 
-                            </InfoWindow>
+                        </InfoWindow>
 
-                            
-                               
+
+
 
                     </Map>
+                    <div style={{ position: 'absolute', bottom: '5px' }}>
+                        <button className={this.state.isButtonFilterClick ? "ui toggle button active" : "ui toggle button"} onClick={this.onFilterRadius}>(3.5 ק"מ) סנן לפי רדיוס</button>
+                    </div>
 
                 </div>
             );
         }
 
-        return <div> 'Loading...' </div>;
+        return (
+            <div style={{ position: 'relative', height: '720px' }} className="ui segment">
+                <div className="ui active dimmer">
+                    <div className="ui huge text loader">טוען את המפה אנא המתן</div>
+                </div>
+                <p></p>
+            </div>
+        );
     }
 
 
@@ -154,7 +174,10 @@ export class MapContainer extends Component {
         }
     }
 
-  
+    onConfirmAlert=()=>{
+        this.setState({showAlert:false})
+    }
+
     render() {
 
         return (
@@ -164,13 +187,15 @@ export class MapContainer extends Component {
                 <div className="right">
                     {this.renderPanel()}
                 </div>
-                <div style={{ position: 'absolute', bottom: '5px' }}>
+
+                {/* <div style={{ position: 'absolute', bottom: '5px' }}>
                     <button className={this.state.isButtonFilterClick ? "ui toggle button active" : "ui toggle button"} onClick={this.onFilterRadius}>(3.5 ק"מ) סנן לפי רדיוס</button>
-                </div>
+                </div> */}
+
                 <Alert
                     open={this.state.showAlert}
-                    onConfirm={this.changeMyPosition}
-                    onCancel={() => this.setState({ showAlert: false })}
+                    onConfirm={this.onConfirmAlert}
+                    //onCancel={() => this.setState({ showAlert: false })}
                 />
             </div>
         );

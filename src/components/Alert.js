@@ -20,8 +20,8 @@ class Alert extends Component {
           open={this.props.open}
           header="?האם לשנות את המיקום"
           content=""
-          cancelButton='לא'
-          confirmButton="כן "
+          //cancelButton='לא'
+          confirmButton="אישור"
           onCancel={this.props.onCancel}
           onConfirm={this.props.onConfirm}
           size='tiny'

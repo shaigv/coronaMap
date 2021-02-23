@@ -15,23 +15,20 @@ div.r-text {
     text-align: right;
     float:right;
 }  
-
+/* 
 .ui.modal>.actions {
     text-align: left;
 }
 
 .ui.dimmer {
   background-color: rgba(0, 0, 0, 0.20);
-}
+} */
 
 .gm-style .gm-style-iw-d::-webkit-scrollbar{
   height: 0;
   width: 0;
 }
-.element.style {
-  padding-left: 0;
-  padding-bottom  : 0;
-}
+
 .right-to-left {
   display:block;
   direction:rtl;
