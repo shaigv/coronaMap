@@ -11,7 +11,6 @@ function ModalExampleBasic() {
       onOpen={() => setOpen(true)}
       open={open}
       size='small'
-      trigger={<Button>Basic Modal</Button>}
       style={{Overflow:'hidden'}}
     >
       <Header icon>

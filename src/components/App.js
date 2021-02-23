@@ -73,6 +73,7 @@ export class MapContainer extends Component {
 
 
     renderContent() {
+        
         if (this.state.errorMessage && !this.state.lat) {
             if (this.state.errorMessage === "User denied Geolocation") {
                 return (
@@ -91,6 +92,7 @@ export class MapContainer extends Component {
 
             return (
                 <div>
+                    <ModalExampleBasic/>
                     <Map
                         ref='map'
                         google={this.props.google}
@@ -198,9 +200,8 @@ export class MapContainer extends Component {
                     onConfirm={this.onConfirmAlert}
                     //onCancel={() => this.setState({ showAlert: false })}
                 /> */}
-                <div style={{display:'flex'}}>
-                <ModalExampleBasic/>
-                </div>
+               
+                
             </div>
         );
 
