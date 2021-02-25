@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Map, GoogleApiWrapper, InfoWindow, Marker } from 'google-maps-react';
+import { Button } from 'semantic-ui-react'
+
 import key from '../Ignore/GAPI';
 import Plist from './Plist';
 import Alert from './Alert'
@@ -8,8 +10,12 @@ import Markers from './Markers'
 import ModalExampleBasic from './Portal'
 
 const RADIUS = 3500;
+const NO_RADIUS = 99999999;
 export class MapContainer extends Component {
-    state = { lat: null, lng: null, positionAlert: null, errorMessage: '', showingInfoWindow: false, showAlert: true, activeMarker: {}, selectedCovid: {}, showTab: false, isButtonFilterClick: true, zoomLevel: 14, radius: RADIUS };
+    state = { lat: null, lng: null, positionAlert: null, errorMessage: '',
+             showingInfoWindow: false, showAlert: true, activeMarker: {},
+              selectedCovid: {}, showTab: false, isButtonFilterClick: true,
+               zoomLevel: 14, radius: RADIUS, noGps : false };
     timeoutid = 0;
 
 
@@ -71,22 +77,34 @@ export class MapContainer extends Component {
 
     }
 
+    noGps = () =>{
+        this.setState({noGps: true, isButtonFilterClick: false,errorMessage:'',lat:32.083470, lng:34.798522})
+        this.onFilterRadius()
+    }
 
     renderContent() {
-        
-        if (this.state.errorMessage && !this.state.lat) {
-            if (this.state.errorMessage === "User denied Geolocation") {
-                return (
-                    <div style={{ position: 'relative', height: '720px' }} className="ui segment">
-                        <div className="ui active dimmer">
-                            <div className="ui huge text loader">נא אשר שימוש במיקום(במובייל יש להדליק את המיקום)</div>
+        if(!this.state.noGps){
+            console.log("no gps!")
+            if (this.state.errorMessage && !this.state.lat) {
+                if (this.state.errorMessage === "User denied Geolocation") {
+                    return (
+                        <div>
+                        <div style={{ position: 'relative', height: '720px' }} className="ui segment">
+                            <div className="ui active dimmer">
+                                <div>
+                                    <div className="ui huge text loader" style={{position:"relative", zindex:'0'}}>נא אשר/הדלק שימוש במיקום</div>
+                                    <Button color="green" style={{position:"relative", zindex:'2000', top: "40px"}} onClick ={this.noGps}>אל תשתמש במיקום שלי</Button>
+
+                                </div>
+                            </div>
+
                         </div>
-                        <p></p>
-                    </div>
-                );
+                        </div>
+                    );
+                }
+                // return <div style={{textAlign:'center'}}>נא אשר שימוש במיקום(במובייל יש להדליק את המיקום)</div>;
             }
-            // return <div style={{textAlign:'center'}}>נא אשר שימוש במיקום(במובייל יש להדליק את המיקום)</div>;
-        }
+    }
 
         if (!this.state.errorMessage && this.state.lat) {
 
@@ -100,7 +118,6 @@ export class MapContainer extends Component {
                         showsUserLocation={true}
                         //onClick={(t, map, c) =>this.changeMyPositionAlert(c.latLng)}
                         //onDblclick ={()=>clearTimeout(this.timeoutid)}
-                        onUserLocationChange={event => console.log("move")}
                         initialCenter={
                             {
                                 lat: this.state.lat,
@@ -170,7 +187,7 @@ export class MapContainer extends Component {
 
     onFilterRadius = () => {
         if (this.state.isButtonFilterClick) {
-            this.setState({ isButtonFilterClick: false, radius: 99999999999 })
+            this.setState({ isButtonFilterClick: false, radius: NO_RADIUS })
         }
         else {
             this.setState({ isButtonFilterClick: true, radius: RADIUS })
