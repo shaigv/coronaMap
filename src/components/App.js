@@ -4,7 +4,6 @@ import { Button } from 'semantic-ui-react'
 
 import key from '../Ignore/GAPI';
 import Plist from './Plist';
-import Alert from './Alert'
 import './Tab.css';
 import Markers from './Markers'
 import ModalExampleBasic from './Portal'
@@ -84,9 +83,9 @@ export class MapContainer extends Component {
 
     renderContent() {
         if(!this.state.noGps){
-            console.log("no gps!")
+            console.log(this.state.errorMessage)
             if (this.state.errorMessage && !this.state.lat) {
-                if (this.state.errorMessage === "User denied Geolocation") {
+                
                     return (
                         <div>
                         <div style={{ position: 'relative', height: '720px' }} className="ui segment">
@@ -103,7 +102,7 @@ export class MapContainer extends Component {
                     );
                 }
                 // return <div style={{textAlign:'center'}}>נא אשר שימוש במיקום(במובייל יש להדליק את המיקום)</div>;
-            }
+            
     }
 
         if (!this.state.errorMessage && this.state.lat) {
