@@ -15,7 +15,7 @@ class Plist extends React.Component {
                     <div ><h3>{this.props.covid.address}</h3></div>
                     <div ><h3>{this.props.covid.city}</h3></div>
 
-
+                    <div></div>
                     <div className="ui relaxed divided list" >
 
                         {this.props.covid.datetime.map(datetime => {
